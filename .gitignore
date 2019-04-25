@@ -25,4 +25,4 @@ broadqueue-*.tar
 .elixir_ls/
 
 # Logs
-/log/
+# /log/
