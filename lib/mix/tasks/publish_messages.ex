@@ -2,17 +2,12 @@ defmodule Mix.Tasks.PublishMessages do
   use Mix.Task
 
   @shortdoc "Publish 100.000 messages to RabbitMQ"
-  def run(args) do
-    case messages_count(args) do
-      {:ok, count} ->
-        {:ok, conn} = AMQP.Connection.open
-        {:ok, chan} = AMQP.Channel.open(conn)
-        AMQP.Queue.declare(chan, "broadway")
-        AMQP.Exchange.declare(chan, "default")
-        AMQP.Queue.bind(chan, "broadway", "default")
-        AMQP.Confirm.select(chan)
-        publish_messages(chan, count)
-        AMQP.Confirm.wait_for_confirms(chan)
+  def run(_args) do
+    {:ok, conn} = AMQP.Connection.open
+    {:ok, chan} = AMQP.Channel.open(conn)
+    AMQP.Queue.declare chan, "broadway"
+    AMQP.Exchange.declare chan, "default"
+    AMQP.Queue.bind chan, "broadway", "default"
 
       :error ->
         Mix.Shell.IO.error("Usage: mix publish_messages --count <messages_count>")
